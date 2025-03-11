@@ -3576,3 +3576,53 @@ function library:Init(key)
     return TabLibrary
 end
 return library
+
+local function getUrl(url)
+    if game then
+        return game:HttpGet(url) -- Roblox-specific code
+    else
+        -- Use an alternative method in other environments (like http requests in a normal Lua environment)
+        -- e.g., using LuaSocket for HTTP requests
+        local http = require("socket.http")
+        return http.request(url)
+    end
+end
+
+local keybinds = {
+    RightControl = "rightctrl",
+    LeftControl = "leftctrl",
+    RightAlt = "rightalt",
+}
+
+local function handleKeybind(key)
+    -- Your code to handle keypresses
+    print("Key pressed: " .. keybinds[key] or "unknown key")
+end
+
+local function notify(message, type)
+    if game then
+        -- Roblox-specific notification handling
+        return library:Notify(message, type)
+    else
+        -- Use standard Lua functionality or a third-party library for notifications
+        print(message)  -- Fallback to console logging for non-Roblox environments
+    end
+end
+
+local function wait(seconds)
+    local start = os.clock()
+    while os.clock() - start < seconds do end
+end
+
+local socket = require("socket")
+socket.sleep(0.75)  -- Pause for 0.75 seconds
+
+local function createButton(label, action)
+    if game then
+        -- Roblox-specific button creation
+        return library:NewButton(label, action)
+    else
+        -- Fallback or use external Lua libraries for other platforms
+        print("Button created: " .. label)  -- Placeholder for non-Roblox environments
+    end
+end
