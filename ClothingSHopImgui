@@ -1,0 +1,5 @@
+local player = game.Players.LocalPlayer
+local gui = player:WaitForChild("PlayerGui"):WaitForChild("Bronx CLOTHING") -- Get the GUI
+
+-- Open the UI only once when the player joins
+gui.Enabled = true 
