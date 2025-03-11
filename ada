@@ -89,7 +89,7 @@ end
 local library = {
     version = "2.0.2",
     title = title or "xsx " .. tostring(math.random(1,366)),
-    fps = 0,
+    fps = math.round(1/v),
     rank = "private"
 
 }
