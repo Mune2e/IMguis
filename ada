@@ -91,7 +91,7 @@ local library = {
     title = title or "xsx " .. tostring(math.random(1,366)),
     fps = 0,
     rank = "private"
-    rank1 = "private"
+
 }
 
 coroutine.wrap(function()
