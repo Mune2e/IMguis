@@ -74,7 +74,7 @@ local function startFlying()
             new = new - workspace.CurrentCamera.CoordinateFrame.rightVector * speed
         end
 
-        -- Make sure speed stays within reasonable bounds
+        -- Ensure speed stays within reasonable bounds
         if speed > 10 then
             speed = 10
         elseif speed < 3 then
@@ -84,7 +84,7 @@ local function startFlying()
         -- Update position
         pos.position = new.p
 
-        -- Smooth rotation
+        -- Smooth rotation (Prevent camera jittering)
         if keys.w then
             gyro.cframe = workspace.CurrentCamera.CoordinateFrame * CFrame.Angles(-math.rad(speed * 0.2), 0, 0)
         elseif keys.s then
