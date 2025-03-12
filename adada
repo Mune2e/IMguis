@@ -1,11 +1,12 @@
 local localplayer = game.Players.LocalPlayer
 local mouse = localplayer:GetMouse()
 
+-- Ensure no existing Core exists
 if workspace:FindFirstChild("Core") then
     workspace.Core:Destroy()
 end
 
--- Create core part to attach the player to
+-- Create a new core part to attach the player to
 local Core = Instance.new("Part")
 Core.Name = "Core"
 Core.Size = Vector3.new(0.05, 0.05, 0.05)
@@ -13,38 +14,46 @@ Core.Anchored = true
 Core.CanCollide = false
 Core.Parent = workspace
 
+-- Attach Core to player's LowerTorso
 local Weld = Instance.new("Weld")
 Weld.Part0 = Core
 Weld.Part1 = localplayer.Character:WaitForChild("LowerTorso")
 Weld.C0 = CFrame.new(0, 0, 0)
 Weld.Parent = Core
 
+-- Wait for Core to be created
 workspace:WaitForChild("Core")
 
 local torso = workspace.Core
 local flying = false
-local speed = 10
+local speed = 5  -- Start with a moderate speed
 local keys = {a = false, d = false, w = false, s = false}
 local e1, e2
+local pos, gyro  -- Variables to store BodyPosition and BodyGyro
 
-local function start()
-    local pos = Instance.new("BodyPosition", torso)
-    local gyro = Instance.new("BodyGyro", torso)
-    pos.Name = "EPIXPOS"
-    pos.maxForce = Vector3.new(math.huge, math.huge, math.huge)
-    pos.position = torso.Position
-    gyro.maxTorque = Vector3.new(9e9, 9e9, 9e9)
-    gyro.cframe = torso.CFrame
+-- Start flying function
+local function startFlying()
+    -- Initialize BodyPosition and BodyGyro only if not already created
+    if not pos then
+        pos = Instance.new("BodyPosition", torso)
+        gyro = Instance.new("BodyGyro", torso)
+
+        pos.Name = "EPIXPOS"
+        pos.maxForce = Vector3.new(math.huge, math.huge, math.huge)
+        pos.position = torso.Position
+
+        gyro.maxTorque = Vector3.new(9e9, 9e9, 9e9)
+        gyro.cframe = torso.CFrame
+    end
 
     -- Keep looping while flying
     repeat
         wait()
 
-        localplayer.Character.Humanoid.PlatformStand = true
+        localplayer.Character.Humanoid.PlatformStand = true  -- Disable normal movement
 
         -- Initialize the new position based on current position and keys pressed
         local new = gyro.cframe - gyro.cframe.p + pos.position
-        local multiplier = 1
 
         -- Slow down movement if no keys are pressed
         if not keys.w and not keys.s and not keys.a and not keys.d then
@@ -91,9 +100,10 @@ local function start()
     if pos then pos:Destroy() end
     flying = false
     localplayer.Character.Humanoid.PlatformStand = false
-    speed = 10
+    speed = 5  -- Reset speed
 end
 
+-- Handle key down events for movement and toggling flight
 e1 = mouse.KeyDown:connect(function(key)
     if not torso or not torso.Parent then 
         flying = false 
@@ -114,11 +124,12 @@ e1 = mouse.KeyDown:connect(function(key)
             flying = false
         else
             flying = true
-            start()
+            startFlying()
         end
     end
 end)
 
+-- Handle key up events for movement
 e2 = mouse.KeyUp:connect(function(key)
     if key == "w" then
         keys.w = false
@@ -131,4 +142,16 @@ e2 = mouse.KeyUp:connect(function(key)
     end
 end)
 
--- Start flying after pressing X
+-- Create a toggle button to activate flying
+local Toggle11 = Tab2:NewToggle("Fly", false, function(value)
+    if value then
+        -- Start flying when the toggle is on
+        if not flying then
+            flying = true
+            startFlying()
+        end
+    else
+        -- Stop flying when the toggle is off
+        flying = false
+    end
+end)
